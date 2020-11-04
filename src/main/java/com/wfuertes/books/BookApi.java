@@ -5,17 +5,15 @@ import java.io.ByteArrayOutputStream;
 
 public class BookApi {
 
-    private final BookRepository repository;
     private final BookService bookService;
 
     @Inject
-    public BookApi(BookRepository repository, BookService bookService) {
-        this.repository = repository;
+    public BookApi(BookService bookService) {
         this.bookService = bookService;
     }
 
-    public Page<Book> findAll(PageQuery pageQuery) {
-        return repository.findAll(pageQuery);
+    public PageSummary<Book> findAll(PageQuery pageQuery) {
+        return bookService.findAll(pageQuery);
     }
 
     public ByteArrayOutputStream downloadCSV() {

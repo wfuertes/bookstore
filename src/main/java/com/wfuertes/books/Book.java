@@ -3,6 +3,8 @@ package com.wfuertes.books;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
+import java.time.Instant;
+
 @Value
 @Accessors(fluent = true)
 public class Book {
@@ -12,7 +14,7 @@ public class Book {
     String author;
     String isbn;
     int rating;
-    long createdAt;
-    long updatedAt;
+    Instant createdAt;
+    Instant updatedAt;
 
 }

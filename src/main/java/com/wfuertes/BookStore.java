@@ -20,7 +20,7 @@ public class BookStore {
                                                                .build();
 
         final List<Module> modules = ImmutableList.<Module>builder().add(new JerseyModule(configuration))
-                                                                    .add(DatabaseModule.production())
+                                                                    .add(DatabaseModule.local()) // for PROD use production()
                                                                     .add(new BookStoreModule())
                                                                     .build();
 

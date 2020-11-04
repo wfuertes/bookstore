@@ -7,8 +7,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.LinkedList;
 
 public class BookService {
 
@@ -19,14 +17,13 @@ public class BookService {
         this.repository = repository;
     }
 
-    public ByteArrayOutputStream downloadCSV() {
-        Page<Book> bookPage = repository.findAll(new PageQuery(1, 100));
-        Collection<Book> books = new LinkedList<>(bookPage.items());
+    public PageSummary<Book> findAll(PageQuery query) {
+        final Page<Book> page = repository.findAll(query);
+        return new PageSummary<>(page.items(), page.nextPageLink("/books"));
+    }
 
-        while (bookPage.hasNext()) {
-            bookPage = bookPage.next();
-            books.addAll(bookPage.items());
-        }
+    public ByteArrayOutputStream downloadCSV() {
+        final Page<Book> bookPage = repository.findAll(new PageQuery(1, 100));
 
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -35,16 +32,20 @@ public class BookService {
                     "id", "title", "author", "isbn", "rating", "createdAt", "updatedAt"
             ));
 
-            for (Book book : books) {
-                printer.printRecord(book.id(),
-                                    book.title(),
-                                    book.author(),
-                                    book.isbn(),
-                                    book.rating(),
-                                    book.createdAt(),
-                                    book.updatedAt());
-            }
-
+            bookPage.itemsStream()
+                    .forEach(book -> {
+                        try {
+                            printer.printRecord(book.id(),
+                                                book.title(),
+                                                book.author(),
+                                                book.isbn(),
+                                                book.rating(),
+                                                book.createdAt(),
+                                                book.updatedAt());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
             printer.flush();
             return outputStream;
         } catch (IOException e) {

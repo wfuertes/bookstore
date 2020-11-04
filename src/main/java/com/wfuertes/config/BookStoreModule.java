@@ -7,6 +7,7 @@ import com.google.inject.Scopes;
 import com.wfuertes.books.BookRepository;
 import com.wfuertes.books.SqlBookRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public class BookStoreModule extends AbstractModule {
@@ -14,7 +15,9 @@ public class BookStoreModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Gson.class).toProvider(() -> new GsonBuilder().registerTypeAdapter(Optional.class, new OptionalAdapter())
-                                                           .create()).in(Scopes.SINGLETON);
+                                                           .registerTypeAdapter(Instant.class, new InstantAdapter())
+                                                           .create())
+                        .in(Scopes.SINGLETON);
 
         bind(BookRepository.class).to(SqlBookRepository.class).in(Scopes.SINGLETON);
     }

@@ -34,6 +34,15 @@ public class DatabaseModule extends AbstractModule {
         return new DatabaseModule(new DataSourceProvider());
     }
 
+    public static DatabaseModule local() {
+        return new DatabaseModule(() -> {
+            final HikariConfig config = new HikariConfig();
+            config.setDriverClassName("org.h2.Driver");
+            config.setJdbcUrl("jdbc:h2:mem:bookstore;MODE=MYSQL;DATABASE_TO_LOWER=TRUE");
+            return new HikariDataSource(config);
+        });
+    }
+
     @Override
     protected void configure() {
         final Flyway flyway = flyway();

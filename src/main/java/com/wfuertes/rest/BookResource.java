@@ -2,8 +2,8 @@ package com.wfuertes.rest;
 
 import com.wfuertes.books.Book;
 import com.wfuertes.books.BookApi;
-import com.wfuertes.books.Page;
 import com.wfuertes.books.PageQuery;
+import com.wfuertes.books.PageSummary;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -31,12 +31,13 @@ public class BookResource {
                               @QueryParam("limit") @DefaultValue("10") int limit) {
 
         final PageQuery pageQuery = new PageQuery(page, limit);
-        final Page<Book> bookPage = bookApi.findAll(pageQuery);
+        final PageSummary<Book> pageSummary = bookApi.findAll(pageQuery);
 
-        return Response.ok(bookPage).build();
+        return Response.ok(pageSummary).build();
     }
 
     @GET
+    @Path("/csv")
     @Produces("application/csv")
     public Response downloadCSV() {
         final String booksCSV = new String(bookApi.downloadCSV().toByteArray());
