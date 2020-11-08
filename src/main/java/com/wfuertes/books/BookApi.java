@@ -2,6 +2,7 @@ package com.wfuertes.books;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.CompletableFuture;
 
 public class BookApi {
 
@@ -18,5 +19,13 @@ public class BookApi {
 
     public ByteArrayOutputStream downloadCSV() {
         return bookService.downloadCSV();
+    }
+
+    public CompletableFuture<Void> processPrices(PageQuery pageQuery) {
+        return bookService.processBookPrices(pageQuery);
+    }
+
+    public PageSummary<BookPrice> findPrices(PageQuery pageQuery) {
+        return bookService.findPrices(pageQuery);
     }
 }

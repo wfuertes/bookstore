@@ -7,6 +7,13 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 public class BookService {
 
@@ -51,5 +58,29 @@ public class BookService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public CompletableFuture<Void> processBookPrices(PageQuery initialPageQuery) {
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            final Runnable task = () -> {
+                final Stream<BookPrice> bookPriceStream = repository.bookStream(initialPageQuery)
+                                                                    .map(book -> new BookPrice(book.id(),
+                                                                                               ThreadLocalRandom.current()
+                                                                                                                .nextInt(1000, 5000),
+                                                                                               Instant.now(),
+                                                                                               Instant.now()));
+
+                repository.save(bookPriceStream);
+            };
+            return CompletableFuture.runAsync(task, executorService);
+        } finally {
+            executorService.shutdown();
+        }
+    }
+
+    public PageSummary<BookPrice> findPrices(PageQuery pageQuery) {
+        final Page<BookPrice> page = repository.findPrices(pageQuery);
+        return new PageSummary<>(page.items(), page.nextPageLink("/books/prices"));
     }
 }
