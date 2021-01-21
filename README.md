@@ -1,4 +1,4 @@
-# bookstore
+# bookstore [![Build Status](https://travis-ci.com/wfuertes/bookstore.svg?branch=main)](https://travis-ci.com/wfuertes/bookstore)
 
 ### Pre-requirements:
 * Java 11
