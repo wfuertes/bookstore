@@ -1,4 +1,4 @@
-# bookstore [![Build Status](https://travis-ci.com/wfuertes/bookstore.svg?branch=main)](https://travis-ci.com/wfuertes/bookstore)
+# bookstore [![wfuertes](https://circleci.com/gh/wfuertes/bookstore.svg?style=shield)](https://github.com/wfuertes/bookstore)
 
 ### Pre-requirements:
 * Java 11
